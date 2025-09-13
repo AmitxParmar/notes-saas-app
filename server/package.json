@@ -1,5 +1,20 @@
 {
+	"name": "notes-api",
+	"version": "1.0.0",
+	"description": "Multi-tenant SaaS Notes Application API",
+	"main": "dist/server.js",
+	"scripts": {
+		"build": "tsc",
+		"start": "node dist/server.js",
+		"dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+		"vercel-build": "tsc"
+	},
 	"dependencies": {
+		"@types/cookie-parser": "^1.4.9",
+		"@types/cors": "^2.8.19",
+		"@types/express": "^5.0.3",
+		"@types/jsonwebtoken": "^9.0.10",
+		"@types/node": "^24.3.3",
 		"bcryptjs": "^3.0.2",
 		"cookie-parser": "^1.4.7",
 		"cors": "^2.8.5",
