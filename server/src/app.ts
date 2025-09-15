@@ -18,6 +18,11 @@ dotenv.config();
 
 const app: Express = express();
 
+// Trust proxy when deployed (for rate limiting and IP detection)
+if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1);
+}
+
 // Security middleware
 app.use(helmet());
 
