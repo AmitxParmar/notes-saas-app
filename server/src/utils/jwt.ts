@@ -33,25 +33,39 @@ export const generateTokens = async (payload: TokenPayload) => {
 
 export const setTokenCookies = (res: Response, accessToken: string, refreshToken: string) => {
   const isProduction = process.env.NODE_ENV === 'production';
+  
+  // Cookie options for production
+  const cookieOptions = {
+    httpOnly: true,
+    secure: isProduction, // Always secure in production
+    sameSite: isProduction ? 'none' as const : 'lax' as const, // 'none' for cross-site in production
+    path: '/',
+//    domain: isProduction ? process.env.CLIENT_URL : undefined // Set domain for production
+  };
 
   res.cookie('accessToken', accessToken, {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? 'none' : 'lax',
+    ...cookieOptions,
     maxAge: 15 * 60 * 1000, // 15 minutes
-    path: "/",
   });
 
   res.cookie('refreshToken', refreshToken, {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? 'none' : 'lax',
+    ...cookieOptions,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    path:"/"
   });
 };
 
 export const clearTokenCookies = (res: Response) => {
-  res.clearCookie('accessToken');
-  res.clearCookie('refreshToken');
+  const isProduction = process.env.NODE_ENV === 'production';
+  
+  // Use same options as when setting cookies
+  const cookieOptions = {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' as const : 'lax' as const,
+    path: '/',
+  //  domain: isProduction ? process.env.CLIENT_URL : undefined
+  };
+
+  res.clearCookie('accessToken', cookieOptions);
+  res.clearCookie('refreshToken', cookieOptions);
 };

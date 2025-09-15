@@ -22,7 +22,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
         if (existingRefreshToken) {
             await RefreshToken.deleteOne({ token: existingRefreshToken });
         }
-        clearTokenCookies(res);
+        
 
         const { email, password } = req.body;
         console.log('Login attempt for email:', email);
