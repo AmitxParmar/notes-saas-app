@@ -25,7 +25,7 @@ if (process.env.NODE_ENV === 'production') {
 
 // Security middleware
 app.use(helmet());
-
+app.use(limiter)
 
 // CORS configuration
 const corsOptions = {

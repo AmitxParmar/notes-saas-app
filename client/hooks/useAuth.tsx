@@ -59,7 +59,7 @@ export function useAuth() {
   const error = userQuery.error as any
   const errorStatus = error?.response?.status
   const errorCode = error?.response?.data?.code
-  console.log(error?.response)
+  
   const isUnauthenticated = 
     errorStatus === 401 || 
     errorCode === "ACCESS_TOKEN_MISSING" || 
