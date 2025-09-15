@@ -20,27 +20,13 @@ export const useCurrentUser = (options?: { enabled?: boolean }) => {
       const data = await authService.getCurrentUser()
       return data
     },
-    retry: (failureCount, error: any) => {
-      // Don't retry on authentication errors
-      const status = error?.response?.status
-      const code = error?.response?.data?.code
+    retry: 2,
       
-      if (status === 401 || 
-          code === "ACCESS_TOKEN_MISSING" || 
-          code === "ACCESS_TOKEN_EXPIRED" || 
-          code === "ACCESS_TOKEN_INVALID" ||
-          code === "REFRESH_TOKEN_MISSING" ||
-          code === "REFRESH_TOKEN_EXPIRED" ||
-          code === "REFRESH_TOKEN_INVALID") {
-        return false
-      }
-      
-      return failureCount < 2
-    },
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     enabled: options?.enabled !== undefined ? options.enabled : true,
     select: (data) => data,
+    
   })
 }
 
@@ -54,15 +40,15 @@ export function useAuth() {
   const userQuery = useCurrentUser({ enabled: !isLoginPage })
   const isLoading = userQuery.isLoading
   const isAuthenticated = !!(userQuery.data?.user && userQuery.data?.tenant && !userQuery.error)
-  
+
   // Check for authentication errors
   const error = userQuery.error as any
   const errorStatus = error?.response?.status
   const errorCode = error?.response?.data?.code
-  
-  const isUnauthenticated = 
-    errorStatus === 401 || 
-    errorCode === "ACCESS_TOKEN_MISSING" || 
+
+  const isUnauthenticated =
+    errorStatus === 401 ||
+    errorCode === "ACCESS_TOKEN_MISSING" ||
     errorCode === "ACCESS_TOKEN_INVALID" ||
     errorCode === "USER_NOT_FOUND" ||
     errorCode === "TENANT_NOT_FOUND" ||
@@ -166,9 +152,9 @@ export const useRefreshUser = () => {
       if (typeof window !== "undefined") {
         const errorCode = error?.response?.data?.code
         // Only redirect if it's actually an auth error
-        if (errorCode === "REFRESH_TOKEN_MISSING" || 
-            errorCode === "REFRESH_TOKEN_EXPIRED" || 
-            errorCode === "REFRESH_TOKEN_INVALID") {
+        if (errorCode === "REFRESH_TOKEN_MISSING" ||
+          errorCode === "REFRESH_TOKEN_EXPIRED" ||
+          errorCode === "REFRESH_TOKEN_INVALID") {
           window.location.href = "/login"
         }
       }
