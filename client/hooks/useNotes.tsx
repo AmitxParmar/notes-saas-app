@@ -7,37 +7,37 @@ import type { Note, CreateNoteData, UpdateNoteData } from "@/types"
 
 export function useNotes() {
   const queryClient = useQueryClient()
-  const { tenant, isAuthenticated } = useAuth()
+  const {  isAuthenticated,user } = useAuth()
 
   // Get all notes
   const { data: notes, isLoading, error } = useQuery({
-    queryKey: ["notes", tenant?.slug],
-    queryFn: () => notesService.getNotes(tenant!.slug),
-    enabled: isAuthenticated && !!tenant?.slug,
+    queryKey: ["notes", user?._id],
+    queryFn: () => notesService.getNotes(),
+    enabled: isAuthenticated && user?.role === "member",
   })
 
   // Create note mutation
   const createNoteMutation = useMutation({
-    mutationFn: (data: CreateNoteData) => notesService.createNote(data, tenant!.slug),
+    mutationFn: (data: CreateNoteData) => notesService.createNote(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes", tenant?.slug] })
+      queryClient.invalidateQueries({ queryKey: ["notes", user?._id] })
     },
   })
 
   // Update note mutation
   const updateNoteMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateNoteData }) =>
-      notesService.updateNote(id, data, tenant!.slug),
+      notesService.updateNote(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes", tenant?.slug] })
+      queryClient.invalidateQueries({ queryKey: ["notes", user?._id] })
     },
   })
 
   // Delete note mutation
   const deleteNoteMutation = useMutation({
-    mutationFn: (id: string) => notesService.deleteNote(id, tenant!.slug),
+    mutationFn: (id: string) => notesService.deleteNote(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes", tenant?.slug] })
+      queryClient.invalidateQueries({ queryKey: ["notes", user?._id] })
     },
   })
 
@@ -62,7 +62,7 @@ export function useNote(id: string) {
 
   return useQuery({
     queryKey: ["note", id, tenant?.slug],
-    queryFn: () => notesService.getNote(id, tenant!.slug),
+    queryFn: () => notesService.getNote(id),
     enabled: isAuthenticated && !!tenant?.slug && !!id,
   })
 }

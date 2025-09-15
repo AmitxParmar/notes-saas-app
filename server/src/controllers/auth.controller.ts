@@ -14,10 +14,21 @@ import { AuthRequest } from '../middleware/auth';
  * @description Validates user credentials, generates JWT tokens, and returns user/tenant data
  */
 export const login = async (req: Request, res: Response): Promise<Response> => {
+    console.log('Login attempt started');
     try {
+        clearTokenCookies(res)
+        // Clear existing tokens first
+        const existingRefreshToken = req.cookies.refreshToken;
+        if (existingRefreshToken) {
+            await RefreshToken.deleteOne({ token: existingRefreshToken });
+        }
+        clearTokenCookies(res);
+
         const { email, password } = req.body;
+        console.log('Login attempt for email:', email);
 
         if (!email || !password) {
+            console.log('Login failed: Missing email or password');
             return res.status(400).json({
                 success: false,
                 message: 'Email and password are required'
@@ -25,17 +36,21 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
         }
 
         // Find user and populate tenant
+        console.log('Finding user with email:', email.toLowerCase());
         const user = await User.findOne({ email: email.toLowerCase() }).populate('tenantId');
 
         if (!user || !(await user.comparePassword(password))) {
+            console.log('Login failed: Invalid credentials for email:', email);
             return res.status(401).json({
                 success: false,
                 message: 'Invalid credentials'
             });
         }
 
+        console.log('User found, checking tenant for user ID:', user._id);
         const tenant = await Tenant.findById(user.tenantId);
         if (!tenant) {
+            console.log('Login failed: Tenant not found for user ID:', user._id);
             return res.status(404).json({
                 success: false,
                 message: 'Tenant not found'
@@ -43,6 +58,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
         }
 
         // Generate tokens
+        console.log('Generating tokens for user ID:', user._id, 'tenant ID:', tenant._id);
         const tokenPayload = {
             userId: String(user._id),
             tenantId: String(tenant._id),
@@ -52,6 +68,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
         const { accessToken, refreshToken } = await generateTokens(tokenPayload);
         setTokenCookies(res, accessToken, refreshToken);
 
+        console.log('Login successful for user ID:', user._id, 'email:', user.email);
         return res.status(200).json({
             success: true,
             message: 'Login successful',
@@ -88,10 +105,12 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
  */
 export const logout = async (req: Request, res: Response): Promise<Response> => {
     try {
+        
         const refreshToken = req.cookies.refreshToken;
 
         if (refreshToken) {
             await RefreshToken.deleteOne({ token: refreshToken });
+            
         }
 
         clearTokenCookies(res);
@@ -210,12 +229,12 @@ export const getCurrentUser = async (req: AuthRequest, res: Response): Promise<R
             message: 'User retrieved successfully',
             data: {
                 user: {
-                    id: user._id,
+                    _id: user._id,
                     email: user.email,
                     role: user.role
                 },
                 tenant: {
-                    id: tenant._id,
+                    _id: tenant._id,
                     name: tenant.name,
                     slug: tenant.slug,
                     plan: tenant.plan,

@@ -20,7 +20,7 @@ export const toggleTenantPlan = async (req: AuthRequest, res: Response) => {
       ? SubscriptionPlan.FREE 
       : SubscriptionPlan.PRO;
     
-    const newMaxNotes = newPlan === SubscriptionPlan.PRO ? -1 : 10; // Unlimited for Pro, 10 for Free
+    const newMaxNotes = newPlan === SubscriptionPlan.PRO ? -1 : 3; // Unlimited for Pro, 10 for Free
 
     // Update tenant plan
     const updatedTenant = await Tenant.findByIdAndUpdate(
@@ -41,7 +41,7 @@ export const toggleTenantPlan = async (req: AuthRequest, res: Response) => {
       message: actionMessage,
       data: {
         tenant: {
-          id: updatedTenant!._id,
+          _id: updatedTenant!._id,
           name: updatedTenant!.name,
           slug: updatedTenant!.slug,
           plan: updatedTenant!.plan,

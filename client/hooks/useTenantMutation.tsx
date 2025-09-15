@@ -14,11 +14,11 @@ export function useTenantMutation() {
 
     // Upgrade tenant to pro plan (admin only)
     const upgradeTenantMutation = useMutation({
-        mutationFn: () => tenantService.upgradePlan(tenant?.name),
+        mutationFn: () => tenantService.upgradePlan(tenant?.slug),
         onSuccess: (upgradedTenant) => {
             // Update query cache
             queryClient.setQueryData(["auth", "tenant"], upgradedTenant)
-            queryClient.invalidateQueries({ queryKey: ["notes", tenant?.id] })
+            queryClient.invalidateQueries({ queryKey: ["auth", "user"] })
         },
     })
 

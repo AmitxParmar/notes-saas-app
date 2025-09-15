@@ -18,9 +18,9 @@ api.interceptors.response.use(
     (error) => {
         if (error.response?.status === 401) {
             // Redirect to login on unauthorized
-            if (typeof window !== "undefined") {
+          /*   if (typeof window !== "undefined") {
                 window.location.href = "/login"
-            }
+            } */
         }
         return Promise.reject(error)
     },

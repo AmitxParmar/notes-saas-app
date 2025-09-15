@@ -24,7 +24,7 @@ export const authenticate = async (req: AuthRequest, res: Response, next: NextFu
         message: 'Access token required',
         code: 'ACCESS_TOKEN_MISSING'
       });
-    }
+    } 
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload;
     

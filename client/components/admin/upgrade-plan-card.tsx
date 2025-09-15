@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Crown, Check, Zap } from "lucide-react"
+import { Crown, Check, Zap, Loader } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth"
 import { useTenantMutation } from "@/hooks/useTenantMutation"
 import {
@@ -55,47 +55,64 @@ export function UpgradePlanCard() {
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            {/* Free Plan */}
-            <div className={`p-4 rounded-lg border ${!isPro ? "border-primary bg-primary/5" : "border-border"}`}>
-              <h3 className="font-semibold mb-2">Free Plan</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-500" />
-                  Up to 3 notes
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-500" />
-                  Basic features
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-500" />
-                  Multi-tenant isolation
-                </li>
-              </ul>
-            </div>
+          <div className="grid min-h-56 w-full gap-4 md:grid-cols-2">
+            {/* /* Free Plan */}
+            {!isUpgrading ?
+              <>
+                <Button
+                  variant={"ghost"}
+                  onClick={() => handleUpgrade()}
+                  className={`p-4 size-full flex flex-col rounded-lg border ${!isPro ? "border-primary bg-primary/5" : "border-border"}`}
+                  disabled={tenant.plan === "free" || isUpgrading}
+                >
+                  <h3 className="font-semibold mb-2">Free Plan</h3>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-green-500" />
+                      Up to 3 notes
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-green-500" />
+                      Basic features
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-green-500" />
+                      Multi-tenant isolation
+                    </li>
+                  </ul>
 
-            {/* Pro Plan */}
-            <div className={`p-4 rounded-lg border ${isPro ? "border-primary bg-primary/5" : "border-border"}`}>
-              <h3 className="font-semibold mb-2 flex items-center gap-2">
-                Pro Plan
-                <Crown className="h-4 w-4 text-yellow-500" />
-              </h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-500" />
-                  Unlimited notes
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-500" />
-                  Advanced features
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-500" />
-                  Priority support
-                </li>
-              </ul>
-            </div>
+                </Button>
+                <Button
+                  variant={"ghost"}
+                  onClick={() => handleUpgrade()}
+                  className={`p-4 size-full flex flex-col rounded-lg border ${isPro ? "border-primary bg-primary/5" : "border-border"}`}
+                  disabled={tenant.plan === "pro" || isUpgrading}
+                >
+                  <h3 className="font-semibold mb-2 flex items-center gap-2">
+                    Pro Plan
+                    <Crown className="h-4 w-4 text-yellow-500" />
+                  </h3>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-green-500" />
+                      Unlimited notes
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-green-500" />
+                      Advanced features
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-green-500" />
+                      Priority support
+                    </li>
+                  </ul>
+
+                </Button>
+              </> : 
+              <div className="col-span-full flex items-center justify-center">
+                <Loader className="animate-spin" />
+              </div>
+            }
           </div>
 
           {!isPro && (
