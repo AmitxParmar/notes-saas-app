@@ -1,3 +1,10 @@
+## 🔗 Links
+
+- **[Client README](./client/README.md)** - Frontend documentation
+- **[Server README](./server/README.md)** - Backend documentation
+- **[API Documentation](./server/README.md#api-endpoints)** - API reference
+- **[Deployment Guide](./server/README.md#deployment)** - Production deployment
+
 # Yardstick Fullstack Application
 
 A modern fullstack note management application with multi-tenant architecture, built with Next.js and Node.js.
@@ -192,9 +199,3 @@ For issues and questions:
 2. Review the existing issues in the repository
 3. Create a new issue with detailed information
 
-## 🔗 Links
-
-- **[Client README](./client/README.md)** - Frontend documentation
-- **[Server README](./server/README.md)** - Backend documentation
-- **[API Documentation](./server/README.md#api-endpoints)** - API reference
-- **[Deployment Guide](./server/README.md#deployment)** - Production deployment
