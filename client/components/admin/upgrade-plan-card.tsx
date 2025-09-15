@@ -46,7 +46,7 @@ export function UpgradePlanCard() {
                 <Crown className="h-5 w-5" />
                 Subscription Plan
               </CardTitle>
-              <CardDescription>Manage your tenant's subscription</CardDescription>
+              <CardDescription>Manage your tenant&apos;s subscription</CardDescription>
             </div>
             <Badge variant={isPro ? "default" : "secondary"} className="text-sm">
               {isPro ? "Pro" : "Free"}

@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { FileText, Settings, Home, Crown } from "lucide-react"
+import { Home, Crown } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth"
 import { useRouter, usePathname } from "next/navigation"
 

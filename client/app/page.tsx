@@ -8,8 +8,6 @@ export default function Home() {
   const router = useRouter()
   useEffect(() => {
     isUnauthenticated ? router.replace("/login") : router.replace('/dashboard')
-  }, [])
-  return (
-    <></>
-  );
+  }, [router, isUnauthenticated])
+  return null
 }
