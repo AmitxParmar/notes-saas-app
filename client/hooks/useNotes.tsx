@@ -13,6 +13,7 @@ export function useNotes() {
   const { data: notes, isLoading, error } = useQuery({
     queryKey: ["notes", user?._id],
     queryFn: () => notesService.getNotes(),
+    retry:3,
     enabled: isAuthenticated && user?.role === "member",
   })
 
