@@ -59,11 +59,23 @@ app.get('/', (req, res) => {
     });
 });
 
+// Debug middleware to log all requests
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.originalUrl}`);
+    next();
+});
+
 // Routes
 app.use('/health', healthRoutes);
 app.use('/api/v1/notes', notesRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/tenant', tenantRoutes);
+
+console.log('✅ Routes registered:');
+console.log('   - /health');
+console.log('   - /api/v1/notes');
+console.log('   - /api/v1/auth');
+console.log('   - /api/v1/tenant');
 
 // 404 handler
 app.use((req, res) => {
