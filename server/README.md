@@ -244,16 +244,11 @@ X-Tenant-Slug: company-slug
 Content-Type: application/json
 
 {
-  "plan": "premium"
+  "plan": "pro"
 }
 ```
 
-### Multi-Tenant Headers
 
-For tenant-specific operations, include the tenant slug in the request header:
-```
-X-Tenant-Slug: your-tenant-slug
-```
 
 ### Error Responses
 

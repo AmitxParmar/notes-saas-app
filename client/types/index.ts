@@ -3,22 +3,22 @@
 export interface User {
   id: string
   email: string
-  role: "admin" | "member"
-  tenantId: string
-  tenantSlug: string
-  createdAt: string
-  updatedAt: string
+  role: "admin" | "user"
+  tenantId?: string
+  tenantSlug?: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 export interface Tenant {
   id: string
   name: string
   slug: string
-  plan: "free" | "pro"
-  noteLimit: number
-  noteCount: number
-  createdAt: string
-  updatedAt: string
+  plan: "free" | "pro" 
+  maxNotes: number
+  
+  createdAt?: string
+  updatedAt?: string
 }
 
 export interface Note {
@@ -33,7 +33,6 @@ export interface Note {
 
 export interface AuthResponse {
   user: User
-  token: string
   tenant: Tenant
 }
 
@@ -58,6 +57,11 @@ export interface ApiError {
 }
 
 export interface ApiResponse<T> {
+  success: boolean
+  message: string
   data: T
-  message?: string
+}
+
+export interface RefreshTokenRequest {
+  refreshToken: string
 }

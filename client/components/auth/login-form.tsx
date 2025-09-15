@@ -9,18 +9,18 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { useAuth } from "@/hooks/useAuth"
+import { useLogin } from "@/hooks/useAuth"
 
 export function LoginForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const { login, isLoginLoading, loginError } = useAuth()
+  const { mutate: login,isPending:isLoginLoading,error:loginError } = useLogin()
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      await login({ email, password })
+      login({ email, password })
       router.push("/dashboard")
     } catch (error) {
       // Error is handled by the hook
@@ -69,7 +69,7 @@ export function LoginForm() {
 
               {loginError && (
                 <Alert variant="destructive">
-                  <AlertDescription>{loginError}</AlertDescription>
+                  <AlertDescription>{loginError.message}</AlertDescription>
                 </Alert>
               )}
 

@@ -7,7 +7,9 @@
 		"build": "tsc",
 		"start": "node dist/server.js",
 		"dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-		"vercel-build": "tsc"
+		"vercel-build": "tsc",
+		"seed": "ts-node src/scripts/seed.ts",
+		"seed:prod": "npm run build && node dist/scripts/seed.js"
 	},
 	"dependencies": {
 		"@types/cookie-parser": "^1.4.9",

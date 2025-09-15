@@ -1,16 +1,22 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "builds": [
-    {
-      "src": "dist/server.js",
-      "use": "@vercel/node",
-      "config": { "includeFiles": ["dist/**"] }
+  "buildCommand": "pnpm install && pnpm run build",
+  "outputDirectory": "dist",
+  "functions": {
+    "dist/server.js": {
+      "runtime": "nodejs20.x",
+      "memory": 512,
+      "maxDuration": 10
     }
-  ],
-  "routes": [
+  },
+  "github": {
+    "enabled": false
+  },
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "dist/server.js"
+      "source": "/(.*)",
+      "destination": "/dist/server.js"
     }
-  ] 
+  ]
 }
