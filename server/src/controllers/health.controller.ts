@@ -1,8 +1,5 @@
-import { Router } from 'express';
 import { Request, Response, NextFunction } from 'express';
 import { performance } from 'perf_hooks';
-
-const router = Router();
 
 interface HealthCheckResponse {
   status: 'healthy' | 'degraded' | 'unhealthy';

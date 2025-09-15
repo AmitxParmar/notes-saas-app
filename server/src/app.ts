@@ -2,11 +2,13 @@ import express, { type Express } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
-
 import dotenv from 'dotenv';
 
 // Routes
 import healthRoutes from './routes/health.route';
+import notesRoutes from './routes/notes.route';
+import authRoutes from './routes/auth.route';
+import tenantRoutes from './routes/tenant.route';
 
 // Middleware
 import { errorHandler } from './middleware/errorHandler';
@@ -44,14 +46,17 @@ app.use(cors(corsOptions));
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // Routes
 app.use('/health', healthRoutes);
+app.use('/api/v1/notes', notesRoutes);
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/tenant', tenantRoutes);
 
 // 404 handler
-app.use('*', (req, res) => {
+app.use((req, res) => {
     res.status(404).json({
         success: false,
         message: 'Route not found'
