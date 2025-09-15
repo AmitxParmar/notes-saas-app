@@ -13,20 +13,8 @@ const navigation = [
     href: "/dashboard",
     icon: Home,
   },
-  {
-    name: "Notes",
-    href: "/dashboard",
-    icon: FileText,
-  },
 ]
 
-const adminNavigation = [
-  {
-    name: "Admin Panel",
-    href: "/admin",
-    icon: Settings,
-  },
-]
 
 export function Sidebar() {
   const { user, tenant } = useAuth()
@@ -34,8 +22,6 @@ export function Sidebar() {
   const pathname = usePathname()
 
   if (!user || !tenant) return null
-
-  const allNavigation = user.role === "admin" ? [...navigation, ...adminNavigation] : navigation
 
   return (
     <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 md:pt-16">
@@ -63,7 +49,7 @@ export function Sidebar() {
 
         <div className="mt-8 flex-grow flex flex-col">
           <nav className="flex-1 px-2 space-y-1">
-            {allNavigation.map((item) => {
+            {navigation.map((item) => {
               const isActive = pathname === item.href
               return (
                 <Button
@@ -74,7 +60,7 @@ export function Sidebar() {
                 >
                   <item.icon className="mr-3 h-4 w-4" />
                   {item.name}
-                  {item.name === "Admin Panel" && (
+                  {user.role === "admin" && (
                     <Badge variant="outline" className="ml-auto text-xs">
                       Admin
                     </Badge>

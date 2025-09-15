@@ -21,7 +21,8 @@ export const authenticate = async (req: AuthRequest, res: Response, next: NextFu
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: 'Access token required'
+        message: 'Access token required',
+        code: 'ACCESS_TOKEN_MISSING'
       });
     }
 
@@ -31,7 +32,8 @@ export const authenticate = async (req: AuthRequest, res: Response, next: NextFu
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'User not found'
+        message: 'User not found',
+        code: 'USER_NOT_FOUND'
       });
     }
 
@@ -39,7 +41,8 @@ export const authenticate = async (req: AuthRequest, res: Response, next: NextFu
     if (!tenant) {
       return res.status(401).json({
         success: false,
-        message: 'Tenant not found'
+        message: 'Tenant not found',
+        code: 'TENANT_NOT_FOUND'
       });
     }
 
@@ -50,13 +53,15 @@ export const authenticate = async (req: AuthRequest, res: Response, next: NextFu
     if (error instanceof jwt.JsonWebTokenError) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid token'
+        message: 'Invalid token',
+        code: 'ACCESS_TOKEN_INVALID'
       });
     }
     
     return res.status(500).json({
       success: false,
-      message: 'Authentication error'
+      message: 'Authentication error',
+      code: 'AUTH_ERROR'
     });
   }
 };
@@ -66,14 +71,16 @@ export const requireRole = (roles: string[]) => {
     if (!req.user) {
       return res.status(401).json({
         success: false,
-        message: 'Authentication required'
+        message: 'Authentication required',
+        code: 'AUTHENTICATION_REQUIRED'
       });
     }
 
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({
         success: false,
-        message: 'Insufficient permissions'
+        message: 'Insufficient permissions',
+        code: 'INSUFFICIENT_PERMISSIONS'
       });
     }
 

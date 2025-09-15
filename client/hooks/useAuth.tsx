@@ -59,16 +59,15 @@ export function useAuth() {
   const error = userQuery.error as any
   const errorStatus = error?.response?.status
   const errorCode = error?.response?.data?.code
-  
+  console.log(error?.response)
   const isUnauthenticated = 
     errorStatus === 401 || 
     errorCode === "ACCESS_TOKEN_MISSING" || 
-    errorCode === "ACCESS_TOKEN_EXPIRED" || 
     errorCode === "ACCESS_TOKEN_INVALID" ||
-    errorCode === "REFRESH_TOKEN_MISSING" ||
-    errorCode === "REFRESH_TOKEN_EXPIRED" ||
-    errorCode === "REFRESH_TOKEN_INVALID" ||
-    errorCode === "USER_NOT_FOUND"
+    errorCode === "USER_NOT_FOUND" ||
+    errorCode === "TENANT_NOT_FOUND" ||
+    errorCode === "AUTH_ERROR" ||
+    errorCode === "AUTHENTICATION_REQUIRED"
 
   // Redirect to login if unauthenticated and not loading
   useEffect(() => {
@@ -100,7 +99,6 @@ export function useAuth() {
     error: userQuery.error ?? null,
   }
 }
-
 // Login mutation
 export const useLogin = () => {
   const queryClient = useQueryClient()

@@ -1,9 +1,10 @@
 // Core types for the multi-tenant SaaS Notes Application
 
 export interface User {
-  id: string
+  _id: string,
+  id?: string
   email: string
-  role: "admin" | "user"
+  role: "admin" | "member"
   tenantId?: string
   tenantSlug?: string
   createdAt?: string
@@ -11,7 +12,8 @@ export interface User {
 }
 
 export interface Tenant {
-  id: string
+  _id:string,
+  id?: string
   name: string
   slug: string
   plan: "free" | "pro" 
@@ -22,7 +24,8 @@ export interface Tenant {
 }
 
 export interface Note {
-  id: string
+  id?: string,
+  _id: string
   title: string
   content: string
   userId: string

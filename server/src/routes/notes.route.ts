@@ -14,7 +14,7 @@ const router:Router = Router();
 
 // All routes require authentication and tenant isolation
 router.use(authenticate);
-router.use(enforceTenantIsolation);
+
 
 router.post('/', requireRole(['member']), createNote);
 router.get('/', requireRole(['member', 'admin']), getNotes);

@@ -2,7 +2,7 @@ import { Response } from 'express';
 import Tenant, { SubscriptionPlan } from '../models/Tenant';
 import { AuthRequest } from '../middleware/auth';
 
-export const upgradeTenant = async (req: AuthRequest, res: Response) => {
+export const toggleTenantPlan = async (req: AuthRequest, res: Response) => {
   try {
     const { slug } = req.params;
     const tenant = req.tenant!;
@@ -11,31 +11,34 @@ export const upgradeTenant = async (req: AuthRequest, res: Response) => {
     if (tenant.slug !== slug) {
       return res.status(403).json({
         success: false,
-        message: 'Cannot upgrade different tenant'
+        message: 'Cannot modify different tenant'
       });
     }
 
-    // Check if already on Pro plan
-    if (tenant.plan === SubscriptionPlan.PRO) {
-      return res.status(400).json({
-        success: false,
-        message: 'Tenant is already on Pro plan'
-      });
-    }
+    // Determine new plan and maxNotes based on current plan
+    const newPlan = tenant.plan === SubscriptionPlan.PRO 
+      ? SubscriptionPlan.FREE 
+      : SubscriptionPlan.PRO;
+    
+    const newMaxNotes = newPlan === SubscriptionPlan.PRO ? -1 : 10; // Unlimited for Pro, 10 for Free
 
-    // Upgrade tenant
+    // Update tenant plan
     const updatedTenant = await Tenant.findByIdAndUpdate(
       tenant._id,
       {
-        plan: SubscriptionPlan.PRO,
-        maxNotes: -1 // Unlimited notes
+        plan: newPlan,
+        maxNotes: newMaxNotes
       },
       { new: true }
     );
 
+    const actionMessage = newPlan === SubscriptionPlan.PRO 
+      ? 'Tenant upgraded to Pro successfully'
+      : 'Tenant downgraded to Free successfully';
+
     res.status(200).json({
       success: true,
-      message: 'Tenant upgraded to Pro successfully',
+      message: actionMessage,
       data: {
         tenant: {
           id: updatedTenant!._id,
@@ -47,7 +50,7 @@ export const upgradeTenant = async (req: AuthRequest, res: Response) => {
       }
     });
   } catch (error) {
-    console.error('Upgrade tenant error:', error);
+    console.error('Toggle tenant plan error:', error);
     res.status(500).json({
       success: false,
       message: 'Internal server error'

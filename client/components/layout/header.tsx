@@ -12,13 +12,14 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Building, LogOut, Settings, User, Crown } from "lucide-react"
-import { useAuth } from "@/hooks/useAuth"
+import { useAuth, useLogout } from "@/hooks/useAuth"
 import { useRouter } from "next/navigation"
 import { ThemeToggle } from "./toggle-theme"
 
 
 export function Header() {
-  const { user, tenant, logout, isLogoutLoading } = useAuth()
+  const { user, tenant } = useAuth()
+  const { mutateAsync: logout, isPending: isLogoutLoading,  } = useLogout()
   const router = useRouter()
 
   const handleLogout = async () => {

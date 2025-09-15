@@ -12,22 +12,18 @@ interface AuthGuardProps {
 }
 
 export function AuthGuard({ children, requireAdmin = false }: AuthGuardProps) {
-  const { isAuthenticated, isAdmin, isLoading } = useAuth()
+  const { isUnauthenticated, isAdmin, isLoading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
     if (!isLoading) {
-      if (!isAuthenticated) {
+      if (isUnauthenticated) {
         router.push("/login")
         return
       }
-
-      if (requireAdmin && !isAdmin) {
-        router.push("/dashboard")
-        return
-      }
+        router.push("/dashboard")  
     }
-  }, [isAuthenticated, isAdmin, isLoading, requireAdmin, router])
+  }, [isUnauthenticated, isAdmin, isLoading, requireAdmin, router])
 
   if (isLoading) {
     return (
@@ -37,7 +33,8 @@ export function AuthGuard({ children, requireAdmin = false }: AuthGuardProps) {
     )
   }
 
-  if (!isAuthenticated || (requireAdmin && !isAdmin)) {
+  if (isUnauthenticated) {
+    
     return null
   }
 
