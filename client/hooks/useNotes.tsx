@@ -1,21 +1,47 @@
 "use client"
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useInfiniteQuery, useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { notesService } from "@/services/notes.service"
 import { useAuth } from "./useAuth"
-import type { Note, CreateNoteData, UpdateNoteData } from "@/types"
+import type {  CreateNoteData, UpdateNoteData } from "@/types"
 
 export function useNotes() {
   const queryClient = useQueryClient()
-  const {  isAuthenticated,user } = useAuth()
+  const { isAuthenticated, user } = useAuth()
 
-  // Get all notes
-  const { data: notes, isLoading, error } = useQuery({
+  // Get all notes with infinite query
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
     queryKey: ["notes", user?._id],
-    queryFn: () => notesService.getNotes(),
-    retry:3,
+    queryFn: async ({ pageParam = 1 }) => {
+      return notesService.getNotes({ page: pageParam, limit: 10 })
+    },
     enabled: isAuthenticated && user?.role === "member",
+    getNextPageParam: (lastPage) => {
+      if (
+        lastPage?.pagination &&
+        lastPage.pagination.hasMore &&
+        lastPage.pagination.currentPage < lastPage.pagination.totalPages
+      ) {
+        return lastPage.pagination.currentPage + 1
+      }
+      return undefined
+    },
+    initialPageParam: 1,
+    retry: 3,
+    refetchOnWindowFocus: false,
+    refetchOnMount: true,
+    refetchOnReconnect: false,
   })
+
+  // Flatten notes from all pages
+  const notes = data?.pages?.flatMap(page => page.notes || []) || []
 
   // Create note mutation
   const createNoteMutation = useMutation({
@@ -43,9 +69,12 @@ export function useNotes() {
   })
 
   return {
-    notes: notes || [],
+    notes,
     isLoading,
     error: error?.message,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
     createNote: createNoteMutation.mutateAsync,
     updateNote: updateNoteMutation.mutateAsync,
     deleteNote: deleteNoteMutation.mutateAsync,

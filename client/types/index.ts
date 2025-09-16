@@ -68,3 +68,14 @@ export interface ApiResponse<T> {
 export interface RefreshTokenRequest {
   refreshToken: string
 }
+
+
+export interface GetNotesResponse {
+  notes: Note[]
+  pagination: {
+    currentPage: number
+    totalPages: number
+    totalNotes: number
+    hasMore: boolean
+  }
+}

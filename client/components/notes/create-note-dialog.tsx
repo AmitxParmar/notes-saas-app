@@ -33,7 +33,7 @@ export function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) 
     const { user, tenant } = useAuth()
     const { upgradeTenant, isUpgrading } = useTenantMutation()
 
-    const isNoteLimitExceeded = notes.length === 2
+    const isNoteLimitExceeded = notes.length === 2 && tenant?.plan === "free"
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()

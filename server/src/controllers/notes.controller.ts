@@ -74,7 +74,6 @@ export const createNote = async (req: AuthRequest, res: Response) => {
     });
   }
 };
-
 /**
  * Retrieves paginated list of notes for the authenticated user's tenant
  * 
@@ -92,20 +91,29 @@ export const createNote = async (req: AuthRequest, res: Response) => {
  * Success Response (200):
  * {
  *   "success": true,
- *   "data": [array of note objects],
- *   "pagination": {
- *     "page": 1,
- *     "limit": 10,
- *     "total": 25,
- *     "pages": 3
+ *   "data": {
+ *     "notes": [array of note objects],
+ *     "pagination": {
+ *       "currentPage": 1,
+ *       "totalPages": 3,
+ *       "totalNotes": 25,
+ *       "hasMore": true
+ *     }
  *   }
  * }
  */
-export const getNotes = async (req: AuthRequest, res: Response) => {
+export const getNotes = async (req: AuthRequest, res: Response): Promise<Response | void> => {
   try {
+    if (!req.user) {
+      return res.status(401).json({
+      success: false,
+        message: "User not authenticated",
+    });
+  }
+
     const tenant = req.tenant!;
     const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
+    const limit = parseInt(req.query.limit as string) || 6;
     const skip = (page - 1) * limit;
 
     const notes = await Note.find({ tenantId: tenant._id })
@@ -114,27 +122,29 @@ export const getNotes = async (req: AuthRequest, res: Response) => {
       .limit(limit)
       .skip(skip);
 
-    const total = await Note.countDocuments({ tenantId: tenant._id });
+    const totalNotes = await Note.countDocuments({ tenantId: tenant._id });
 
     res.status(200).json({
       success: true,
-      data: notes,
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit)
-      }
+      data: {
+        notes,
+        pagination: {
+          currentPage: page,
+          totalPages: Math.ceil(totalNotes / limit),
+          totalNotes,
+          hasMore: skip + notes.length < totalNotes,
+        },
+      },
     });
   } catch (error) {
     console.error('Get notes error:', error);
     res.status(500).json({
       success: false,
-      message: 'Internal server error'
+      message: 'Failed to fetch notes',
+      error: error instanceof Error ? error.message : "Unknown error",
     });
   }
 };
-
 /**
  * Retrieves a specific note by ID within the authenticated user's tenant
  * 

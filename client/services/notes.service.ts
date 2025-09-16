@@ -1,9 +1,9 @@
 import api from "@/lib/api"
-import type { Note, CreateNoteData, UpdateNoteData, ApiResponse } from "@/types"
+import type { Note, CreateNoteData, UpdateNoteData, ApiResponse, GetNotesResponse } from "@/types"
 
 class NotesService {
-  async getNotes(): Promise<Note[]> {
-    const response = await api.get<ApiResponse<Note[]>>("/notes")
+async getNotes(params?: { page?: number; limit?: number ; search?: string; sortBy?: string; sortOrder?: 'asc' | 'desc' }): Promise<GetNotesResponse> {
+    const response = await api.get<ApiResponse<GetNotesResponse>>("/notes", { params })
     return response.data.data
   }
 

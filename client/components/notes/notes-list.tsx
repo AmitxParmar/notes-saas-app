@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
-import { Plus, FileText } from "lucide-react"
+import { Plus, FileText, XCircle, PlusCircle, Loader } from "lucide-react"
 import { useNotes } from "@/hooks/useNotes"
 import { useAuth } from "@/hooks/useAuth"
 import { NoteCard } from "./note-card"
@@ -11,7 +11,7 @@ import { CreateNoteDialog } from "./create-note-dialog"
 
 export function NotesList() {
   const [isCreateOpen, setIsCreateOpen] = useState(false)
-  const { notes, isLoading } = useNotes()
+  const { notes, isLoading, fetchNextPage,hasNextPage,isFetchingNextPage } = useNotes()
   const { tenant } = useAuth()
 
   if (isLoading) {
@@ -59,11 +59,36 @@ export function NotesList() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {notes.map((note) => (
-            <NoteCard key={note.id} note={note} />
+            <NoteCard key={note._id} note={note} />
           ))}
+
         </div>
       )}
-
+        <div className="w-full py-6 flex items-center justify-center ">
+                <Button
+                  variant="ghost"
+                  onClick={() => fetchNextPage()}
+                  disabled={!hasNextPage || isFetchingNextPage}
+                  className="text-lg"
+                >
+                  {isFetchingNextPage ? (
+                    <>
+                      <Loader size={20} className="mr-2" />
+                      Loading more...
+                    </>
+                  ) : hasNextPage ? (
+                    <>
+                      <PlusCircle size={20} className="mr-2" />
+                      Load More!!
+                    </>
+                  ) : (
+                    <>
+                      <XCircle size={20} className="mr-2" />
+                      Nothing more to load
+                    </>
+                  )}
+                </Button>
+              </div>
       <CreateNoteDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} />
     </div>
   )
