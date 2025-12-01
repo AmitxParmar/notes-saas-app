@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { authService } from "@/services/auth.service"
-import type { User, Tenant, LoginCredentials, AuthResponse } from "@/types"
+import type { LoginCredentials, AuthResponse } from "@/types"
 
 // Query keys
 export const authKeys = {

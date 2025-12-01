@@ -11,7 +11,7 @@ import { CreateNoteDialog } from "./create-note-dialog"
 
 export function NotesList() {
   const [isCreateOpen, setIsCreateOpen] = useState(false)
-  const { notes, isLoading, fetchNextPage,hasNextPage,isFetchingNextPage } = useNotes()
+  const { notes, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useNotes()
   const { tenant } = useAuth()
 
   if (isLoading) {
@@ -64,31 +64,31 @@ export function NotesList() {
 
         </div>
       )}
-        <div className="w-full py-6 flex items-center justify-center ">
-                <Button
-                  variant="ghost"
-                  onClick={() => fetchNextPage()}
-                  disabled={!hasNextPage || isFetchingNextPage}
-                  className="text-lg"
-                >
-                  {isFetchingNextPage ? (
-                    <>
-                      <Loader size={20} className="mr-2" />
-                      Loading more...
-                    </>
-                  ) : hasNextPage ? (
-                    <>
-                      <PlusCircle size={20} className="mr-2" />
-                      Load More!!
-                    </>
-                  ) : (
-                    <>
-                      <XCircle size={20} className="mr-2" />
-                      Nothing more to load
-                    </>
-                  )}
-                </Button>
-              </div>
+      <div className="w-full py-6 flex items-center justify-center ">
+        <Button
+          variant="ghost"
+          onClick={() => fetchNextPage()}
+          disabled={!hasNextPage || isFetchingNextPage}
+          className="text-lg"
+        >
+          {isFetchingNextPage ? (
+            <>
+              <Loader size={20} className="mr-2" />
+              Loading more...
+            </>
+          ) : hasNextPage ? (
+            <>
+              <PlusCircle size={20} className="mr-2" />
+              Load More!!
+            </>
+          ) : (
+            <>
+              <XCircle size={20} className="mr-2" />
+              Nothing more to load
+            </>
+          )}
+        </Button>
+      </div>
       <CreateNoteDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} />
     </div>
   )
